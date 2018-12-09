@@ -4,6 +4,8 @@ version = "0.1.0"
 authors = ["est31 <MTest31@outlook.com>", "David Tolnay <dtolnay@gmail.com>"]
 license = "MIT/Apache-2.0"
 description = "Big array helper for serde."
+repository = "https://github.com/est31/serde-big-array
+readme = "README.md"
 
 [dependencies]
 serde = "1.0"
