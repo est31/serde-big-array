@@ -1,5 +1,5 @@
-#[macro_use]
-extern crate serde_derive;
+#![forbid(unsafe_code)]
+
 extern crate serde;
 
 extern crate core;
