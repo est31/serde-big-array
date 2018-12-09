@@ -12,11 +12,7 @@ extern crate serde_json;
 #[macro_use]
 extern crate serde_big_array;
 
-big_array! {
-    BigArray;
-    40, 48, 50, 56, 64, 72, 96, 100, 128, 160, 192, 200, 224, 256, 384, 512,
-    768, 1024, 2048, 4096, 8192, 16384, 32768, 65536,
-}
+big_array! { BigArray; }
 
 #[derive(Serialize, Deserialize)]
 struct S {
