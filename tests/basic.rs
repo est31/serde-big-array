@@ -5,8 +5,6 @@ extern crate serde_json;
 #[macro_use]
 extern crate serde_big_array;
 
-//use serde::de::{Deserialize, Deserializer, Visitor, SeqAccess, Error};
-
 big_array! {
     BigArray;
     40, 48, 50, 56, 64, 72, 96, 100, 128, 160, 192, 200, 224, 256, 384, 512,
