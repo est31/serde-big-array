@@ -158,12 +158,22 @@ macro_rules! big_array {
                         type Value = [T; $len];
 
                         fn expecting(&self, formatter: &mut $crate::reex::fmt::Formatter) -> $crate::reex::fmt::Result {
+                            #[cfg(not(macros_literal))]
                             macro_rules! fconcat {
                                 ($l:ident) => {
                                     format!("an array of length {}", $l)
                                 };
                                 ($l:expr) => {
                                     concat!("an array of length", $l)
+                                };
+                            }
+                            #[cfg(macros_literal)]
+                            macro_rules! fconcat {
+                                ($l:literal) => {
+                                    concat!("an array of length", $l)
+                                };
+                                ($l:tt) => {
+                                    format!("an array of length {}", $l)
                                 };
                             }
 
@@ -183,6 +193,8 @@ macro_rules! big_array {
                     }
 
                     let visitor = ArrayVisitor { element: PhantomData };
+                    // The allow is needed to support (32 + 33) like expressions
+                    #[allow(unused_parens)]
                     deserializer.deserialize_tuple($len, visitor)
                 }
             }
