@@ -1,5 +1,9 @@
 ## serde-big-array
 
+[![docs](https://docs.rs/serde-big-array/badge.svg)](https://docs.rs/crate/serde-big-array)
+[![crates.io](https://img.shields.io/crates/v/serde-big-array.svg)](https://crates.io/crates/serde-big-array)
+[![dependency status](https://deps.rs/repo/github/est31/serde-big-array/status.svg)](https://deps.rs/repo/github/est31/serde-big-array)
+
 Big array helper for serde. The purpose of this crate is to make (de-)serializing arrays of sizes > 32 easy. This solution is needed until [const generics](https://github.com/rust-lang/rust/issues/44580) are becoming stable.
 
 Bases on [this](https://github.com/serde-rs/serde/issues/631#issuecomment-322677033) snippet.
