@@ -60,7 +60,7 @@ on an array that's a member of a struct you want to (de-) serialize.
 # #[macro_use]
 # extern crate serde_big_array;
 # fn main() {}
-
+#
 big_array! { BigArray; }
 
 #[derive(Serialize, Deserialize)]
@@ -81,7 +81,7 @@ The default way to invoke the macro is by specifying the name only, like:
 # #[macro_use]
 # extern crate serde_big_array;
 # fn main() {}
-
+#
 big_array! {
     BigArray;
 }
@@ -105,7 +105,7 @@ You can specify a custom set of numbers by using the second way to invoke the ma
 # #[macro_use]
 # extern crate serde_big_array;
 # fn main() {}
-
+#
 big_array! {
     BigArray;
     42, 300, 1234, 99999,
