@@ -34,9 +34,9 @@ fn test() {
 # fn main() { let s = S { arr: [1; 64] }; }
 ```
 */
+#![no_std]
 
 extern crate serde;
-extern crate core;
 
 #[doc(hidden)]
 pub mod reex {
