@@ -122,7 +122,7 @@ struct S {
 */
 #[macro_export]
 macro_rules! big_array {
-    ($name:ident; $($len:expr,)+) => {
+    ($name:ident; $($len:tt,)+) => {
         pub trait $name<'de>: Sized {
             fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
                 where S: $crate::reex::Serializer;
@@ -158,7 +158,16 @@ macro_rules! big_array {
                         type Value = [T; $len];
 
                         fn expecting(&self, formatter: &mut $crate::reex::fmt::Formatter) -> $crate::reex::fmt::Result {
-                            formatter.write_str(concat!("an array of length ", $len))
+                            macro_rules! fconcat {
+                                ($l:ident) => {
+                                    format!("an array of length {}", $l)
+                                };
+                                ($l:expr) => {
+                                    concat!("an array of length", $l)
+                                };
+                            }
+
+                            formatter.write_str(&fconcat!($len))
                         }
 
                         fn visit_seq<A>(self, mut seq: A) -> Result<[T; $len], A::Error>
