@@ -159,22 +159,22 @@ macro_rules! big_array {
 
                         fn expecting(&self, formatter: &mut $crate::reex::fmt::Formatter) -> $crate::reex::fmt::Result {
                             #[cfg(not(macros_literal))]
-                            macro_rules! fconcat {
+                            macro_rules! write_len {
                                 ($l:tt) => {
-                                    format!("an array of length {}", $l)
+                                    write!(formatter, "an array of length {}", $l)
                                 };
                             }
                             #[cfg(macros_literal)]
-                            macro_rules! fconcat {
+                            macro_rules! write_len {
                                 ($l:literal) => {
-                                    concat!("an array of length", $l)
+                                    write!(formatter, concat!("an array of length ", $l))
                                 };
                                 ($l:tt) => {
-                                    format!("an array of length {}", $l)
+                                    write!(formatter, "an array of length {}", $l)
                                 };
                             }
 
-                            formatter.write_str(&fconcat!($len))
+                            write_len!($len)
                         }
 
                         fn visit_seq<A>(self, mut seq: A) -> Result<[T; $len], A::Error>
