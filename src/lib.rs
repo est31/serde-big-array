@@ -124,16 +124,16 @@ struct S {
 macro_rules! big_array {
     ($name:ident; $($len:tt,)+) => {
         pub trait $name<'de>: Sized {
-            fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+            fn serialize<S>(&self, serializer: S) -> core::result::Result<S::Ok, S::Error>
                 where S: $crate::reex::Serializer;
-            fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+            fn deserialize<D>(deserializer: D) -> core::result::Result<Self, D::Error>
                 where D: $crate::reex::Deserializer<'de>;
         }
         $(
             impl<'de, T> $name<'de> for [T; $len]
                 where T: Default + Copy + $crate::reex::Serialize + $crate::reex::Deserialize<'de>
             {
-                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                fn serialize<S>(&self, serializer: S) -> core::result::Result<S::Ok, S::Error>
                     where S: $crate::reex::Serializer
                 {
                     use $crate::reex::ser::SerializeTuple;
@@ -144,7 +144,7 @@ macro_rules! big_array {
                     seq.end()
                 }
 
-                fn deserialize<D>(deserializer: D) -> std::result::Result<[T; $len], D::Error>
+                fn deserialize<D>(deserializer: D) -> core::result::Result<[T; $len], D::Error>
                     where D: $crate::reex::Deserializer<'de>
                 {
                     use $crate::reex::PhantomData;
@@ -177,7 +177,7 @@ macro_rules! big_array {
                             write_len!($len)
                         }
 
-                        fn visit_seq<A>(self, mut seq: A) -> std::result::Result<[T; $len], A::Error>
+                        fn visit_seq<A>(self, mut seq: A) -> core::result::Result<[T; $len], A::Error>
                             where A: $crate::reex::SeqAccess<'de>
                         {
                             let mut arr = [T::default(); $len];
