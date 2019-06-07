@@ -1,4 +1,5 @@
 #![forbid(unsafe_code)]
+#![cfg_attr(feature = "const-generics", feature(const_generics))]
 
 /*!
 Big array helper for serde.
@@ -47,6 +48,11 @@ pub mod reex {
     pub use serde::ser::{Serialize, Serializer};
     pub use serde::de::{Deserialize, Deserializer, Visitor, SeqAccess, Error};
 }
+
+#[cfg(feature = "const-generics")]
+mod const_generics;
+#[cfg(feature = "const-generics")]
+pub use const_generics::BigArray;
 
 /**
 Big array macro
