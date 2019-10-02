@@ -129,7 +129,7 @@ struct S {
 */
 #[macro_export]
 macro_rules! big_array {
-    ($name:ident; $($len:tt,)+) => {
+    ($name:ident; $($len:expr,)+) => {
         pub trait $name<'de>: Sized {
             fn serialize<S>(&self, serializer: S) -> $crate::reex::result::Result<S::Ok, S::Error>
                 where S: $crate::reex::Serializer;
