@@ -104,7 +104,7 @@ You can specify a custom set of numbers by using the second way to invoke the ma
 #
 big_array! {
     BigArray;
-    42, 300, 1234, 99999,
+    +42, 300, 1234, 99999,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -115,6 +115,9 @@ struct S {
     arr_b: [u8; 42],
 }
 ```
+
+If the `+` is specified like in the example above, the trait is also implemented for the
+pre-defined set of array lengths. If omitted, it's implemented for the specified numbers only.
 */
 #[macro_export]
 macro_rules! big_array {
