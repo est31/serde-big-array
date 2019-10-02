@@ -59,14 +59,11 @@ This is the main macro of this crate.
 Invoking it creates a trait that can be used together with a `#[serde(with = "TraitName")]` like attribute
 on an array that's a member of a struct you want to (de-) serialize.
 ```
-# extern crate serde;
-# #[macro_use]
-# extern crate serde_derive;
-# #[macro_use]
-# extern crate serde_big_array;
+# use serde_derive::{Serialize, Deserialize};
+# use serde_big_array::big_array;
 # fn main() {}
 #
-serde_big_array::big_array! { BigArray; }
+big_array! { BigArray; }
 
 #[derive(Serialize, Deserialize)]
 struct S {
@@ -80,11 +77,8 @@ The macro doesn't automatically implement the trait for all possible array lengt
 Instead, the trait is implemented for a pre-specified set of numbers.
 The default way to invoke the macro is by specifying the name only, like:
 ```
-# extern crate serde;
-# #[macro_use]
-# extern crate serde_derive;
-# #[macro_use]
-# extern crate serde_big_array;
+# use serde_derive::{Serialize, Deserialize};
+# use serde_big_array::big_array;
 # fn main() {}
 #
 big_array! {
@@ -104,11 +98,8 @@ If this default setting is not suiting your use case, the macro has you covered 
 You can specify a custom set of numbers by using the second way to invoke the macro:
 
 ```
-# extern crate serde;
-# #[macro_use]
-# extern crate serde_derive;
-# #[macro_use]
-# extern crate serde_big_array;
+# use serde_derive::{Serialize, Deserialize};
+# use serde_big_array::big_array;
 # fn main() {}
 #
 big_array! {
