@@ -1,11 +1,7 @@
 #![no_std]
 
-extern crate serde;
-#[macro_use]
-extern crate serde_derive;
-extern crate serde_json;
-#[macro_use]
-extern crate serde_big_array;
+use serde_derive::{Serialize, Deserialize};
+use serde_big_array::big_array;
 
 mod module {
     pub const NUMBER: usize = 127;

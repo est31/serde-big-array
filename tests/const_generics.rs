@@ -1,7 +1,5 @@
 #![cfg(feature = "const-generics")]
 
-extern crate serde_big_array;
-
 use serde_big_array::BigArray;
 
 #[derive(Serialize, Deserialize)]

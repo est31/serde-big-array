@@ -37,8 +37,6 @@ fn test() {
 */
 #![no_std]
 
-extern crate serde;
-
 #[doc(hidden)]
 pub mod reex {
     pub use core::fmt;
@@ -68,7 +66,7 @@ on an array that's a member of a struct you want to (de-) serialize.
 # extern crate serde_big_array;
 # fn main() {}
 #
-big_array! { BigArray; }
+serde_big_array::big_array! { BigArray; }
 
 #[derive(Serialize, Deserialize)]
 struct S {
