@@ -24,14 +24,14 @@ impl<'de, T, const N: usize> BigArray<'de> for [T; N]
         seq.end()
     }
 
-    fn deserialize<D>(deserializer: D) -> result::Result<[T; N], D::Error>
+    fn deserialize<D>(deserializer: D) -> result::Result<Self, D::Error>
         where D: Deserializer<'de>
     {
         struct ArrayVisitor<T> {
             element: PhantomData<T>,
         }
 
-        impl<'de, T> Visitor<'de> for ArrayVisitor<T>
+        impl<'de, T, const N: usize> Visitor<'de> for ArrayVisitor<[T; N]>
             where T: Default + Copy + Deserialize<'de>
         {
             type Value = [T; N];
@@ -59,7 +59,7 @@ impl<'de, T, const N: usize> BigArray<'de> for [T; N]
             fn visit_seq<A>(self, mut seq: A) -> result::Result<[T; N], A::Error>
                 where A: SeqAccess<'de>
             {
-                let mut arr = [T::default(); N];
+                let mut arr: [T; N] = [T::default(); N];
                 for i in 0..N {
                     arr[i] = seq.next_element()?
                         .ok_or_else(|| Error::invalid_length(i, &self))?;
