@@ -5,7 +5,7 @@ matrix:
     - rust: stable
     - rust: beta
     - rust: nightly
-    - rust: 1.20.0
+    - rust: 1.31.0
 script:
   - cargo build
   - cargo test
