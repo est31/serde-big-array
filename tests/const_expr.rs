@@ -7,7 +7,7 @@ const NUMBER: usize = 137;
 
 big_array! {
     BigArray;
-    (NUMBER * NUMBER + 17), NUMBER, 42,
+    NUMBER * NUMBER + 17, NUMBER, 42,
 }
 
 #[derive(Serialize, Deserialize)]
