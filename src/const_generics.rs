@@ -1,7 +1,6 @@
 use core::fmt;
 use core::result;
 use core::marker::PhantomData;
-use serde::ser;
 use serde::ser::{Serialize, Serializer, SerializeTuple};
 use serde::de::{Deserialize, Deserializer, Visitor, SeqAccess, Error};
 
