@@ -196,7 +196,7 @@ macro_rules! big_array {
             }
         )+
     };
-    ($name:ident; + $($len:expr,)*) => {
+    ($name:ident; + $($len:expr),* $(,)?) => {
         big_array! {
             $name;
             40, 48, 50, 56, 64, 72, 96, 100, 128, 160, 192, 200, 224, 256, 384, 512,

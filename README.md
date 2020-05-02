@@ -35,7 +35,7 @@ fn test() {
 
 ### MSRV
 
-The minimum supported Rust version (MSRV) is Rust 1.31.0.
+The minimum supported Rust version (MSRV) is Rust 1.32.0.
 
 ### License
 [license]: #license
