@@ -157,13 +157,6 @@ macro_rules! big_array {
                         type Value = [T; $len];
 
                         fn expecting(&self, formatter: &mut $crate::reex::fmt::Formatter) -> $crate::reex::fmt::Result {
-                            #[cfg(not(macros_literal))]
-                            macro_rules! write_len {
-                                ($l:tt) => {
-                                    write!(formatter, "an array of length {}", $l)
-                                };
-                            }
-                            #[cfg(macros_literal)]
                             macro_rules! write_len {
                                 ($l:literal) => {
                                     write!(formatter, concat!("an array of length ", $l))

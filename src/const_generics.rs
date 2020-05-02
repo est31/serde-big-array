@@ -36,13 +36,6 @@ impl<'de, T, const N: usize> BigArray<'de> for [T; N]
             type Value = [T; N];
 
             fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-                #[cfg(not(macros_literal))]
-                macro_rules! write_len {
-                    ($l:tt) => {
-                        write!(formatter, "an array of length {}", $l)
-                    };
-                }
-                #[cfg(macros_literal)]
                 macro_rules! write_len {
                     ($l:literal) => {
                         write!(formatter, concat!("an array of length ", $l))
