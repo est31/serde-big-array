@@ -2,7 +2,7 @@
 name = "serde-big-array"
 version = "0.2.0"
 authors = ["est31 <MTest31@outlook.com>", "David Tolnay <dtolnay@gmail.com>"]
-license = "MIT/Apache-2.0"
+license = "MIT OR Apache-2.0"
 description = "Big array helper for serde."
 documentation = "https://docs.rs/serde-big-array"
 repository = "https://github.com/est31/serde-big-array"
