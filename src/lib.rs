@@ -1,5 +1,5 @@
 #![forbid(unsafe_code)]
-#![cfg_attr(feature = "const-generics", feature(const_generics))]
+#![cfg_attr(feature = "const-generics", feature(min_const_generics))]
 
 /*!
 Big array helper for serde.
