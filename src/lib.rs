@@ -1,4 +1,4 @@
-#![forbid(unsafe_code)]
+#![cfg_attr(not(feature = "const-generics"), forbid(unsafe_code))]
 
 /*!
 Big array helper for serde.

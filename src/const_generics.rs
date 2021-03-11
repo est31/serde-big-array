@@ -1,6 +1,7 @@
 use core::fmt;
 use core::result;
 use core::marker::PhantomData;
+use core::mem::MaybeUninit;
 use serde::ser::{Serialize, Serializer, SerializeTuple};
 use serde::de::{Deserialize, Deserializer, Visitor, SeqAccess, Error};
 
@@ -11,7 +12,7 @@ pub trait BigArray<'de>: Sized {
         where D: Deserializer<'de>;
 }
 impl<'de, T, const N: usize> BigArray<'de> for [T; N]
-    where T: Default + Copy + Serialize + Deserialize<'de>
+    where T: Serialize + Deserialize<'de>
 {
     fn serialize<S>(&self, serializer: S) -> result::Result<S::Ok, S::Error>
         where S: Serializer
@@ -31,7 +32,7 @@ impl<'de, T, const N: usize> BigArray<'de> for [T; N]
         }
 
         impl<'de, T, const N: usize> Visitor<'de> for ArrayVisitor<[T; N]>
-            where T: Default + Copy + Deserialize<'de>
+            where T: Deserialize<'de>
         {
             type Value = [T; N];
 
@@ -51,12 +52,15 @@ impl<'de, T, const N: usize> BigArray<'de> for [T; N]
             fn visit_seq<A>(self, mut seq: A) -> result::Result<[T; N], A::Error>
                 where A: SeqAccess<'de>
             {
-                let mut arr: [T; N] = [T::default(); N];
-                for i in 0..N {
-                    arr[i] = seq.next_element()?
-                        .ok_or_else(|| Error::invalid_length(i, &self))?;
+                unsafe {
+                    let mut arr: MaybeUninit<[T; N]> = MaybeUninit::uninit();
+                    for i in 0 .. N {
+                        let p = (arr.as_mut_ptr() as * mut T).wrapping_add(i);
+                        core::ptr::write(p, seq.next_element()?
+                            .ok_or_else(|| Error::invalid_length(i, &self))?);
+                    }
+                    Ok(arr.assume_init())
                 }
-                Ok(arr)
             }
         }
 
