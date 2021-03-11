@@ -3,7 +3,7 @@
 /*!
 Big array helper for serde.
 The purpose of this crate is to make (de-)serializing arrays of sizes > 32 easy.
-This solution is needed until [const generics](https://github.com/rust-lang/rust/issues/44580) are becoming stable.
+This solution is needed until [serde adopts const generics support](https://github.com/serde-rs/serde/issues/1937).
 
 ## Example
 ```
@@ -31,7 +31,31 @@ fn test() {
     assert!(false);
 }
 
-# fn main() { let s = S { arr: [1; 64] }; }
+# fn main() {}
+```
+
+If you enable the `const-generics` feature, you won't have to invoke the `big_array` macro any more:
+
+```Rust
+#[macro_use]
+extern crate serde_derive;
+use serde_big_array::BigArray;
+
+#[derive(Serialize, Deserialize)]
+struct S {
+    #[serde(with = "BigArray")]
+    arr: [u8; 64],
+}
+
+#[test]
+fn test() {
+    let s = S { arr: [1; 64] };
+    let j = serde_json::to_string(&s).unwrap();
+    let s_back = serde_json::from_str::<S>(&j).unwrap();
+    assert!(&s.arr[..] == &s_back.arr[..]);
+}
+
+# fn main() {}
 ```
 */
 #![no_std]
