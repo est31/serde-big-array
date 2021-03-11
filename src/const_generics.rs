@@ -37,16 +37,7 @@ impl<'de, T, const N: usize> BigArray<'de> for [T; N]
             type Value = [T; N];
 
             fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-                macro_rules! write_len {
-                    ($l:literal) => {
-                        write!(formatter, concat!("an array of length ", $l))
-                    };
-                    ($l:tt) => {
-                        write!(formatter, "an array of length {}", $l)
-                    };
-                }
-
-                write_len!(N)
+                write!(formatter, "an array of length {}", N)
             }
 
             fn visit_seq<A>(self, mut seq: A) -> result::Result<[T; N], A::Error>
