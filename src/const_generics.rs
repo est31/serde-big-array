@@ -5,6 +5,25 @@ use core::mem::MaybeUninit;
 use serde::ser::{Serialize, Serializer, SerializeTuple};
 use serde::de::{Deserialize, Deserializer, Visitor, SeqAccess, Error};
 
+struct PartiallyInitialized<T, const N :usize>(Option<MaybeUninit<[T; N]>>, usize);
+
+impl<T, const N :usize> Drop for PartiallyInitialized<T, N> {
+    fn drop(&mut self) {
+        if core::mem::needs_drop::<T>() {
+            if let Some(arr) = &mut self.0 {
+                while self.1 > 0 {
+                    let offs = self.1;
+                    self.1 = self.1 - 1;
+                    let p = (arr.as_mut_ptr() as * mut T).wrapping_add(offs);
+                    unsafe {
+                        core::ptr::drop_in_place::<T>(p);
+                    }
+                }
+            }
+        }
+    }
+}
+
 pub trait BigArray<'de>: Sized {
     fn serialize<S>(&self, serializer: S) -> result::Result<S::Ok, S::Error>
         where S: Serializer;
@@ -44,13 +63,18 @@ impl<'de, T, const N: usize> BigArray<'de> for [T; N]
                 where A: SeqAccess<'de>
             {
                 unsafe {
-                    let mut arr: MaybeUninit<[T; N]> = MaybeUninit::uninit();
-                    for i in 0 .. N {
-                        let p = (arr.as_mut_ptr() as * mut T).wrapping_add(i);
-                        core::ptr::write(p, seq.next_element()?
-                            .ok_or_else(|| Error::invalid_length(i, &self))?);
+                    let mut arr: PartiallyInitialized<T, N> = PartiallyInitialized(Some(MaybeUninit::uninit()), 0);
+                    {
+                        let p = arr.0.as_mut().unwrap();
+                        for i in 0 .. N {
+                            let p = (p.as_mut_ptr() as * mut T).wrapping_add(i);
+                            core::ptr::write(p, seq.next_element()?
+                                .ok_or_else(|| Error::invalid_length(i, &self))?);
+                            arr.1 += 1;
+                        }
                     }
-                    Ok(arr.assume_init())
+                    let initialized = arr.0.take().unwrap().assume_init();
+                    Ok(initialized)
                 }
             }
         }

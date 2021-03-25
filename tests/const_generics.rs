@@ -18,3 +18,6 @@ fn test() {
     let s_back = serde_json::from_str::<S>(&j).unwrap();
     assert!(&s.arr[..] == &s_back.arr[..]);
 }
+
+// TODO add a test that drop is executed nicely if there is an error
+// during deserialization
