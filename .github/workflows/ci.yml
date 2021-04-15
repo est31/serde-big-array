@@ -29,10 +29,6 @@ jobs:
         RUSTFLAGS: -D warnings
       run: |
          cargo test --all
-    - name: Run tests with const generics enabled
-      if: matrix.toolchain == 'nightly' || matrix.toolchain == 'beta'
-      run: |
-         cargo test --all --features const-generics
     - name: Run cargo doc
       run: |
         cargo doc --all
