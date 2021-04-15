@@ -9,34 +9,8 @@ extern crate serde;
 #[macro_use]
 extern crate serde_derive;
 extern crate serde_json;
-#[macro_use]
 extern crate serde_big_array;
 
-big_array! { BigArray; }
-
-#[derive(Serialize, Deserialize)]
-struct S {
-    #[serde(with = "BigArray")]
-    arr: [u8; 64],
-}
-
-#[test]
-fn test() {
-    let s = S { arr: [1; 64] };
-    let j = serde_json::to_string(&s).unwrap();
-    let s_back = serde_json::from_str::<S>(&j).unwrap();
-    assert!(&s.arr[..] == &s_back.arr[..]);
-    assert!(false);
-}
-
-# fn main() {}
-```
-
-If you enable the `const-generics` feature, you won't have to invoke the `big_array` macro any more:
-
-```Rust
-#[macro_use]
-extern crate serde_derive;
 use serde_big_array::BigArray;
 
 #[derive(Serialize, Deserialize)]
@@ -51,6 +25,7 @@ fn test() {
     let j = serde_json::to_string(&s).unwrap();
     let s_back = serde_json::from_str::<S>(&j).unwrap();
     assert!(&s.arr[..] == &s_back.arr[..]);
+    assert!(false);
 }
 
 # fn main() {}
