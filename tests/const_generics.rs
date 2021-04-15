@@ -1,5 +1,3 @@
-#![cfg(feature = "const-generics")]
-
 use serde_derive::{Serialize, Deserialize};
 use serde_big_array::BigArray;
 

@@ -1,4 +1,5 @@
 #![no_std]
+#![allow(deprecated)]
 
 use serde_derive::{Serialize, Deserialize};
 use serde_big_array::big_array;

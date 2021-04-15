@@ -64,71 +64,11 @@ pub use const_generics::BigArray;
 /**
 Big array macro
 
-This is the main macro of this crate.
-Invoking it creates a trait that can be used together with a `#[serde(with = "TraitName")]` like attribute
-on an array that's a member of a struct you want to (de-) serialize.
-```
-# use serde_derive::{Serialize, Deserialize};
-# use serde_big_array::big_array;
-# fn main() {}
-#
-big_array! { BigArray; }
-
-#[derive(Serialize, Deserialize)]
-struct S {
-    #[serde(with = "BigArray")]
-    arr: [u8; 128],
-}
-```
-The name of the added trait is your choice.
-
-The macro doesn't automatically implement the trait for all possible array lengths.
-Instead, the trait is implemented for a pre-specified set of numbers.
-The default way to invoke the macro is by specifying the name only, like:
-```
-# use serde_derive::{Serialize, Deserialize};
-# use serde_big_array::big_array;
-# fn main() {}
-#
-big_array! {
-    BigArray;
-}
-```
-Then, the trait will be implemented for a pre-defined set of interesting array lengths.
-Currently, the numbers are:
-```ignore
-40, 48, 50, 56, 64, 72, 96, 100, 128, 160, 192, 200, 224, 256, 384, 512,
-768, 1024, 2048, 4096, 8192, 16384, 32768, 65536,
-```
-These are the same numbers that the `arrayvec` crate uses as well,
-and should cover most places this macro is used.
-
-If this default setting is not suiting your use case, the macro has you covered as well.
-You can specify a custom set of numbers by using the second way to invoke the macro:
-
-```
-# use serde_derive::{Serialize, Deserialize};
-# use serde_big_array::big_array;
-# fn main() {}
-#
-big_array! {
-    BigArray;
-    +42, 300, 1234, 99999,
-}
-
-#[derive(Serialize, Deserialize)]
-struct S {
-    #[serde(with = "BigArray")]
-    arr_a: [u8; 300],
-    #[serde(with = "BigArray")]
-    arr_b: [u8; 42],
-}
-```
-
-If the `+` is specified like in the example above, the trait is also implemented for the
-pre-defined set of array lengths. If omitted, it's implemented for the specified numbers only.
+The macro exists for legacy reasons, to make moving to the pure `const-generics` mode easier.
+Instead of this macro, please use the [`BigArray`] trait directly.
 */
 #[macro_export]
+#[deprecated(note = "deprecated in favour of the BigArray trait")]
 macro_rules! big_array {
     ($name:ident; $($len:expr),+ $(,)?) => {
         pub use $crate::BigArray as $name;
