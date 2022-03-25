@@ -48,56 +48,60 @@ fn test_droppped_partial() {
         }
     }
 
-    const CNT: usize = 4;
-
     #[derive(Serialize, Deserialize, Debug)]
-    struct Droppables {
+    struct Droppables<const CNT: usize> {
         #[serde(with = "BigArray")]
         arr: [DroppableU32; CNT],
     }
 
-    let mut maybe_init_array = core::mem::MaybeUninit::<[DroppableU32; CNT]>::uninit();
-    for i in 0..CNT {
-        unsafe {
-            let p = (maybe_init_array.as_mut_ptr() as *mut DroppableU32).wrapping_add(i);
-            core::ptr::write(p, DroppableU32(i as u32 * 3));
+    impl<const CNT: usize> Droppables<CNT> {
+        fn test(val_idx: usize, val: u32) {
+            let mut maybe_init_array = core::mem::MaybeUninit::<[DroppableU32; CNT]>::uninit();
+            for i in 0..CNT {
+                unsafe {
+                    let p = (maybe_init_array.as_mut_ptr() as *mut DroppableU32).wrapping_add(i);
+                    core::ptr::write(p, DroppableU32(i as u32 * 3));
+                }
+            }
+
+            let mut ds = Self {
+                arr: unsafe { maybe_init_array.assume_init() },
+            };
+
+            clear_droppped_set();
+            ds.arr[val_idx] = DroppableU32(val);
+            assert_eq!(
+                get_droppped_set(),
+                vec![val_idx as u32 * 3].into_iter().collect::<HashSet<_>>()
+            );
+            clear_droppped_set();
+
+            let j = serde_json::to_string(&ds).unwrap();
+            println!("{}", j);
+
+            let val_starts = j.find(&val.to_string()).unwrap();
+            {
+                let ds_back = serde_json::from_str::<Self>(&j).unwrap();
+                assert!(&ds.arr[..] == &ds_back.arr[..]);
+            }
+            let mut zero_to_cnt_set: HashSet<u32> =
+                (0..CNT as u32).map(|v| v * 3).into_iter().collect();
+
+            zero_to_cnt_set.remove(&(val_idx as u32 * 3));
+            zero_to_cnt_set.insert(val);
+
+            assert_eq!(get_droppped_set(), zero_to_cnt_set);
+            clear_droppped_set();
+            let _ds_back_err = serde_json::from_str::<Self>(&j[0..val_starts]).unwrap_err();
+
+            let zero_to_val_idx_set: HashSet<u32> =
+                (0..val_idx as u32).map(|v| v * 3).into_iter().collect();
+
+            assert_eq!(get_droppped_set(), zero_to_val_idx_set);
+            clear_droppped_set();
         }
     }
 
-    let mut ds = Droppables {
-        arr: unsafe { maybe_init_array.assume_init() },
-    };
-
-    const VAL_IDX: usize = 2;
-    const VAL: u32 = 20220325;
-
-    assert_eq!(get_droppped_set().len(), 0);
-    ds.arr[VAL_IDX] = DroppableU32(VAL);
-    assert_eq!(
-        get_droppped_set(),
-        vec![VAL_IDX as u32 * 3].into_iter().collect::<HashSet<_>>()
-    );
-    clear_droppped_set();
-
-    let j = serde_json::to_string(&ds).unwrap();
-    println!("{}", j);
-
-    let val_starts = j.find(&VAL.to_string()).unwrap();
-    {
-        let ds_back = serde_json::from_str::<Droppables>(&j).unwrap();
-        assert!(&ds.arr[..] == &ds_back.arr[..]);
-    }
-    let mut zero_to_cnt_set: HashSet<u32> = (0..CNT as u32).map(|v| v * 3).into_iter().collect();
-
-    zero_to_cnt_set.remove(&(VAL_IDX as u32 * 3));
-    zero_to_cnt_set.insert(VAL);
-
-    assert_eq!(get_droppped_set(), zero_to_cnt_set);
-    clear_droppped_set();
-    let _ds_back_err = serde_json::from_str::<Droppables>(&j[0..val_starts]).unwrap_err();
-
-    let zero_to_val_idx_set: HashSet<u32> =
-        (0..VAL_IDX as u32).map(|v| v * 3).into_iter().collect();
-
-    assert_eq!(get_droppped_set(), zero_to_val_idx_set);
+    Droppables::<4>::test(2, 20220325);
+    Droppables::<77>::test(50, 20220325);
 }
