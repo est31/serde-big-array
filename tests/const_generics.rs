@@ -79,6 +79,8 @@ fn test_droppped_partial() {
             let j = serde_json::to_string(&ds).unwrap();
             println!("{}", j);
 
+            // Completely deserialize the string,
+            // and ensure the entire array was dropped
             let val_starts = j.find(&val.to_string()).unwrap();
             {
                 let ds_back = serde_json::from_str::<Self>(&j).unwrap();
@@ -92,6 +94,9 @@ fn test_droppped_partial() {
 
             assert_eq!(get_droppped_set(), zero_to_cnt_set);
             clear_droppped_set();
+
+            // Now only partially deserialize the string,
+            // and ensure the contents were dropped successfully
             let _ds_back_err = serde_json::from_str::<Self>(&j[0..val_starts]).unwrap_err();
 
             let zero_to_val_idx_set: HashSet<u32> =
