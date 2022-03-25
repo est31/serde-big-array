@@ -77,7 +77,9 @@ where
                         let p = arr.0.as_mut().unwrap();
                         for i in 0..N {
                             let p = (p.as_mut_ptr() as *mut T).wrapping_add(i);
-                            let val = seq.next_element()?.ok_or_else(|| Error::invalid_length(i, &self))?;
+                            let val = seq
+                                .next_element()?
+                                .ok_or_else(|| Error::invalid_length(i, &self))?;
                             core::ptr::write(p, val);
                             arr.1 += 1;
                         }

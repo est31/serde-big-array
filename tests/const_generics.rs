@@ -31,15 +31,11 @@ fn test_droppped_partial() {
     }
 
     fn get_droppped_set() -> HashSet<u32> {
-        DROPPED.with(|dropped| {
-            dropped.borrow().iter().copied().collect::<HashSet<_>>()
-        })
+        DROPPED.with(|dropped| dropped.borrow().iter().copied().collect::<HashSet<_>>())
     }
 
     fn clear_droppped_set() {
-        DROPPED.with(|dropped| {
-            dropped.borrow_mut().clear()
-        });
+        DROPPED.with(|dropped| dropped.borrow_mut().clear());
         assert_eq!(get_droppped_set().len(), 0);
     }
 
@@ -52,7 +48,7 @@ fn test_droppped_partial() {
         }
     }
 
-    const CNT :usize = 4;
+    const CNT: usize = 4;
 
     #[derive(Serialize, Deserialize, Debug)]
     struct Droppables {
@@ -77,7 +73,10 @@ fn test_droppped_partial() {
 
     assert_eq!(get_droppped_set().len(), 0);
     ds.arr[VAL_IDX] = DroppableU32(VAL);
-    assert_eq!(get_droppped_set(), vec![VAL_IDX as u32 * 3].into_iter().collect::<HashSet<_>>());
+    assert_eq!(
+        get_droppped_set(),
+        vec![VAL_IDX as u32 * 3].into_iter().collect::<HashSet<_>>()
+    );
     clear_droppped_set();
 
     let j = serde_json::to_string(&ds).unwrap();
@@ -88,7 +87,7 @@ fn test_droppped_partial() {
         let ds_back = serde_json::from_str::<Droppables>(&j).unwrap();
         assert!(&ds.arr[..] == &ds_back.arr[..]);
     }
-    let mut zero_to_cnt_set :HashSet<u32> = (0..CNT as u32).map(|v| v * 3).into_iter().collect();
+    let mut zero_to_cnt_set: HashSet<u32> = (0..CNT as u32).map(|v| v * 3).into_iter().collect();
 
     zero_to_cnt_set.remove(&(VAL_IDX as u32 * 3));
     zero_to_cnt_set.insert(VAL);
@@ -97,7 +96,8 @@ fn test_droppped_partial() {
     clear_droppped_set();
     let _ds_back_err = serde_json::from_str::<Droppables>(&j[0..val_starts]).unwrap_err();
 
-    let zero_to_val_idx_set :HashSet<u32> = (0..VAL_IDX as u32).map(|v| v * 3).into_iter().collect();
+    let zero_to_val_idx_set: HashSet<u32> =
+        (0..VAL_IDX as u32).map(|v| v * 3).into_iter().collect();
 
     assert_eq!(get_droppped_set(), zero_to_val_idx_set);
 }
