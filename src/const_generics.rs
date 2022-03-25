@@ -9,15 +9,16 @@ struct PartiallyInitialized<T, const N: usize>(Option<MaybeUninit<[T; N]>>, usiz
 
 impl<T, const N: usize> Drop for PartiallyInitialized<T, N> {
     fn drop(&mut self) {
-        if core::mem::needs_drop::<T>() {
-            if let Some(arr) = &mut self.0 {
-                while self.1 > 0 {
-                    let offs = self.1;
-                    self.1 = self.1 - 1;
-                    let p = (arr.as_mut_ptr() as *mut T).wrapping_add(offs);
-                    unsafe {
-                        core::ptr::drop_in_place::<T>(p);
-                    }
+        if !core::mem::needs_drop::<T>() {
+            return;
+        }
+        if let Some(arr) = &mut self.0 {
+            while self.1 > 0 {
+                self.1 -= 1;
+                let offs = self.1;
+                let p = (arr.as_mut_ptr() as *mut T).wrapping_add(offs);
+                unsafe {
+                    core::ptr::drop_in_place::<T>(p);
                 }
             }
         }
@@ -76,11 +77,8 @@ where
                         let p = arr.0.as_mut().unwrap();
                         for i in 0..N {
                             let p = (p.as_mut_ptr() as *mut T).wrapping_add(i);
-                            core::ptr::write(
-                                p,
-                                seq.next_element()?
-                                    .ok_or_else(|| Error::invalid_length(i, &self))?,
-                            );
+                            let val = seq.next_element()?.ok_or_else(|| Error::invalid_length(i, &self))?;
+                            core::ptr::write(p, val);
                             arr.1 += 1;
                         }
                     }
