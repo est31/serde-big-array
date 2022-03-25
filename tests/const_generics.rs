@@ -22,9 +22,8 @@ fn test() {
     assert!(&s.arr[..] == &s_back.arr[..]);
 }
 
-// TODO add a test that drop is executed nicely if there is an error
+// test that drop is executed nicely if there is an error
 // during deserialization
-
 #[test]
 fn test_droppped_partial() {
     thread_local! {
