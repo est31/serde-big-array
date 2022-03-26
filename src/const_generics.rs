@@ -33,6 +33,7 @@ pub trait BigArray<'de>: Sized {
     where
         D: Deserializer<'de>;
 }
+
 impl<'de, T, const N: usize> BigArray<'de> for [T; N]
 where
     T: Serialize + Deserialize<'de>,
