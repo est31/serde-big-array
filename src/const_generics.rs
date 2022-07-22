@@ -71,7 +71,7 @@ where
             where
                 A: SeqAccess<'de>,
             {
-                unsafe {
+                
                     let mut arr: PartiallyInitialized<T, N> =
                         PartiallyInitialized(Some(MaybeUninit::uninit()), 0);
                     {
@@ -81,13 +81,13 @@ where
                             let val = seq
                                 .next_element()?
                                 .ok_or_else(|| Error::invalid_length(i, &self))?;
-                            core::ptr::write(p, val);
+                            unsafe { core::ptr::write(p, val) };
                             arr.1 += 1;
                         }
                     }
-                    let initialized = arr.0.take().unwrap().assume_init();
+                    let initialized = unsafe { arr.0.take().unwrap().assume_init() };
                     Ok(initialized)
-                }
+                
             }
         }
 
