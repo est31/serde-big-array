@@ -25,22 +25,22 @@ impl<T, const N: usize> Drop for PartiallyInitialized<T, N> {
     }
 }
 
-pub trait BigArray<'de>: Sized {
-    fn serialize<S>(&self, serializer: S) -> result::Result<S::Ok, S::Error>
-    where
-        S: Serializer;
-    fn deserialize<D>(deserializer: D) -> result::Result<Self, D::Error>
-    where
-        D: Deserializer<'de>;
-}
-
-impl<'de, T, const N: usize> BigArray<'de> for [T; N]
-where
-    T: Serialize + Deserialize<'de>,
-{
+pub trait BigArray<'de, T>: Sized {
     fn serialize<S>(&self, serializer: S) -> result::Result<S::Ok, S::Error>
     where
         S: Serializer,
+        T: Serialize;
+    fn deserialize<D>(deserializer: D) -> result::Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+        T: Deserialize<'de>;
+}
+
+impl<'de, T, const N: usize> BigArray<'de, T> for [T; N] {
+    fn serialize<S>(&self, serializer: S) -> result::Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+        T: Serialize,
     {
         let mut seq = serializer.serialize_tuple(self.len())?;
         for elem in &self[..] {
@@ -52,6 +52,7 @@ where
     fn deserialize<D>(deserializer: D) -> result::Result<Self, D::Error>
     where
         D: Deserializer<'de>,
+        T: Deserialize<'de>,
     {
         struct ArrayVisitor<T> {
             element: PhantomData<T>,
