@@ -43,7 +43,7 @@ Important links:
 
 ### MSRV
 
-The minimum supported Rust version (MSRV) is Rust 1.51.0.
+The minimum supported Rust version (MSRV) is Rust 1.56.0.
 
 ### License
 [license]: #license
