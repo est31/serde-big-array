@@ -1,10 +1,7 @@
 #![no_std]
-#![allow(deprecated)]
 
-use serde_big_array::big_array;
+use serde_big_array::BigArray;
 use serde_derive::{Deserialize, Serialize};
-
-big_array! { BigArray; }
 
 #[derive(Serialize)]
 struct S {

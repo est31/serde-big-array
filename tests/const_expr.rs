@@ -1,15 +1,9 @@
 #![no_std]
-#![allow(deprecated)]
 
-use serde_big_array::big_array;
+use serde_big_array::BigArray;
 use serde_derive::{Deserialize, Serialize};
 
 const NUMBER: usize = 137;
-
-big_array! {
-    BigArray;
-    NUMBER * NUMBER + 17, NUMBER, 42
-}
 
 #[derive(Serialize, Deserialize)]
 struct S {

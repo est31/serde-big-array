@@ -35,30 +35,3 @@ fn test() {
 
 mod const_generics;
 pub use const_generics::BigArray;
-
-/**
-Big array macro
-
-The macro exists for legacy reasons, to make moving to the pure `const-generics` mode easier.
-Instead of this macro, please use the [`BigArray`] trait directly.
-*/
-#[macro_export]
-#[deprecated(note = "deprecated in favour of the BigArray trait")]
-macro_rules! big_array {
-    ($name:ident; $($len:expr),+ $(,)?) => {
-        pub use $crate::BigArray as $name;
-    };
-    ($name:ident; + $($len:expr),* $(,)?) => {
-        big_array! {
-            $name;
-            40, 48, 50, 56, 64, 72, 96, 100, 128, 160, 192, 200, 224, 256, 384, 512,
-            768, 1024, 2048, 4096, 8192, 16384, 32768, 65536,
-            $($len,)*
-        }
-    };
-    ($name:ident;) => {
-        big_array! {
-            $name; +
-        }
-    }
-}
