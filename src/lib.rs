@@ -3,6 +3,17 @@ Big array helper for serde.
 The purpose of this crate is to make (de-)serializing arrays of sizes > 32 easy.
 This solution is needed until [serde adopts const generics support](https://github.com/serde-rs/serde/issues/1937).
 
+This crates provides you with two tools to use big arrays in your crate:
+
+* The first tool is the [`BigArray`] trait. You can use it together with the
+  `serde_derive` macro and an `#[serde(with = "BigArray")]` next to your data declaration.
+* The second tool is the [`Array`] struct. It requires you to change your datastructures,
+  and some of the code accessing your array, but it allows for nested use cases,
+  which [`BigArray`] struggles with.
+
+[`BigArray`]: self::BigArray
+[`Array`]: self::Array
+
 ## Example
 ```
 extern crate serde;
