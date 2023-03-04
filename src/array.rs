@@ -1,6 +1,5 @@
 use crate::const_generics::PartiallyInitialized;
 use crate::BigArray;
-use core::mem::MaybeUninit;
 use core::ops::{Deref, DerefMut, Index, IndexMut};
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
