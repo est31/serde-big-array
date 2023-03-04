@@ -17,7 +17,7 @@ use serde::{Deserialize, Deserializer, Serialize, Serializer};
 /// # use serde_derive::{Serialize, Deserialize};
 /// #[derive(Serialize, Deserialize)]
 /// struct S {
-///     arr: Array<u8, 64>,
+///     arr: Box<Array<u8, 64>>,
 /// }
 /// ```
 #[repr(transparent)]
