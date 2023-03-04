@@ -11,6 +11,9 @@ This crates provides you with two tools to use big arrays in your crate:
   and some of the code accessing your array, but it allows for nested use cases,
   which [`BigArray`] struggles with.
 
+We recommended using the [`BigArray`] trait in most cases, and using the
+[`Array`] struct only if [`BigArray`] doesn't work.
+
 [`BigArray`]: self::BigArray
 [`Array`]: self::Array
 
