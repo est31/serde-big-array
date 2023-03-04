@@ -1,4 +1,6 @@
+use crate::const_generics::PartiallyInitialized;
 use crate::BigArray;
+use core::mem::MaybeUninit;
 use core::ops::{Deref, DerefMut, Index, IndexMut};
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
@@ -21,8 +23,7 @@ use serde::{Deserialize, Deserializer, Serialize, Serializer};
 /// }
 /// ```
 #[repr(transparent)]
-#[derive(PartialEq, Eq, PartialOrd, Ord, Hash]
-#[derive(Copy, Clone, Default, Debug)]
+#[derive(PartialEq, Eq, PartialOrd, Ord, Hash, Copy, Clone, Debug)]
 pub struct Array<T, const N: usize>(pub [T; N]);
 
 impl<'de, T: Deserialize<'de>, const N: usize> Deserialize<'de> for Array<T, N> {
@@ -31,6 +32,29 @@ impl<'de, T: Deserialize<'de>, const N: usize> Deserialize<'de> for Array<T, N> 
         D: Deserializer<'de>,
     {
         Ok(Self(<[T; N] as BigArray<T>>::deserialize(deserializer)?))
+    }
+}
+
+impl<T: Default, const N: usize> Default for Array<T, N> {
+    fn default() -> Self {
+        // TODO use array::from_fn once the MSRV allows stuff from 1.63.0
+        let arr = {
+            let mut arr: PartiallyInitialized<T, N> =
+                PartiallyInitialized(Some(MaybeUninit::uninit()), 0);
+            unsafe {
+                {
+                    let p = arr.0.as_mut().unwrap();
+                    for i in 0..N {
+                        let p = (p.as_mut_ptr() as *mut T).wrapping_add(i);
+                        core::ptr::write(p, Default::default());
+                        arr.1 += 1;
+                    }
+                }
+                let initialized = arr.0.take().unwrap().assume_init();
+                initialized
+            }
+        };
+        Self(arr)
     }
 }
 

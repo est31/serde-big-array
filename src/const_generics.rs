@@ -5,7 +5,10 @@ use core::result;
 use serde::de::{Deserialize, Deserializer, Error, SeqAccess, Visitor};
 use serde::ser::{Serialize, SerializeTuple, Serializer};
 
-struct PartiallyInitialized<T, const N: usize>(Option<MaybeUninit<[T; N]>>, usize);
+pub(crate) struct PartiallyInitialized<T, const N: usize>(
+    pub(crate) Option<MaybeUninit<[T; N]>>,
+    pub(crate) usize,
+);
 
 impl<T, const N: usize> Drop for PartiallyInitialized<T, N> {
     fn drop(&mut self) {
