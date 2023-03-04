@@ -1,5 +1,6 @@
 use crate::BigArray;
-use serde::{Serialize, Serializer, Deserialize, Deserializer};
+use core::ops::{Index, IndexMut};
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 /// An array newtype usable for nested structures
 ///
@@ -37,5 +38,27 @@ impl<T: Serialize, const N: usize> Serialize for Array<T, N> {
         S: Serializer,
     {
         <[T; N] as BigArray<T>>::serialize(&self.0, serializer)
+    }
+}
+
+impl<T, I, const N: usize> Index<I> for Array<T, N>
+where
+    [T]: Index<I>,
+{
+    type Output = <[T] as Index<I>>::Output;
+
+    #[inline]
+    fn index(&self, index: I) -> &Self::Output {
+        Index::index(&self.0 as &[T], index)
+    }
+}
+
+impl<T, I, const N: usize> IndexMut<I> for Array<T, N>
+where
+    [T]: IndexMut<I>,
+{
+    #[inline]
+    fn index_mut(&mut self, index: I) -> &mut Self::Output {
+        IndexMut::index_mut(&mut self.0 as &mut [T], index)
     }
 }
