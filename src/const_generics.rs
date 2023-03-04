@@ -25,6 +25,17 @@ impl<T, const N: usize> Drop for PartiallyInitialized<T, N> {
     }
 }
 
+/// The big array serialization helper trait
+///
+/// ```
+/// # use serde_derive::{Serialize, Deserialize};
+/// # use serde_big_array::BigArray;
+/// #[derive(Serialize, Deserialize)]
+/// struct S {
+///     #[serde(with = "BigArray")]
+///     arr: [u8; 64],
+/// }
+/// ```
 pub trait BigArray<'de, T>: Sized {
     fn serialize<S>(&self, serializer: S) -> result::Result<S::Ok, S::Error>
     where
