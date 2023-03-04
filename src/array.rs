@@ -21,7 +21,8 @@ use serde::{Deserialize, Deserializer, Serialize, Serializer};
 /// }
 /// ```
 #[repr(transparent)]
-#[derive(Eq, PartialEq, PartialOrd, Copy, Clone, Ord, Debug)]
+#[derive(PartialEq, Eq, PartialOrd, Ord, Hash]
+#[derive(Copy, Clone, Default, Debug)]
 pub struct Array<T, const N: usize>(pub [T; N]);
 
 impl<'de, T: Deserialize<'de>, const N: usize> Deserialize<'de> for Array<T, N> {
