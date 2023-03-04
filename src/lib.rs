@@ -33,5 +33,7 @@ fn test() {
 */
 #![no_std]
 
+mod array;
 mod const_generics;
+pub use array::Array;
 pub use const_generics::BigArray;
