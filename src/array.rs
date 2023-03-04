@@ -39,8 +39,7 @@ impl<T: Default, const N: usize> Default for Array<T, N> {
     fn default() -> Self {
         // TODO use array::from_fn once the MSRV allows stuff from 1.63.0
         let arr = {
-            let mut arr: PartiallyInitialized<T, N> =
-                PartiallyInitialized(Some(MaybeUninit::uninit()), 0);
+            let mut arr = PartiallyInitialized::<T, N>::new();
             unsafe {
                 {
                     let p = arr.0.as_mut().unwrap();

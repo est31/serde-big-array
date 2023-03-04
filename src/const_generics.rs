@@ -10,6 +10,13 @@ pub(crate) struct PartiallyInitialized<T, const N: usize>(
     pub(crate) usize,
 );
 
+impl<T, const N: usize> PartiallyInitialized<T, N> {
+    #[inline]
+    pub(crate) fn new() -> Self {
+        PartiallyInitialized(Some(MaybeUninit::uninit()), 0)
+    }
+}
+
 impl<T, const N: usize> Drop for PartiallyInitialized<T, N> {
     fn drop(&mut self) {
         if !core::mem::needs_drop::<T>() {
@@ -87,8 +94,7 @@ impl<'de, T, const N: usize> BigArray<'de, T> for [T; N] {
                 A: SeqAccess<'de>,
             {
                 unsafe {
-                    let mut arr: PartiallyInitialized<T, N> =
-                        PartiallyInitialized(Some(MaybeUninit::uninit()), 0);
+                    let mut arr = PartiallyInitialized::<T, N>::new();
                     {
                         let p = arr.0.as_mut().unwrap();
                         for i in 0..N {
