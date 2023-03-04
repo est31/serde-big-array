@@ -20,6 +20,7 @@ use serde::{Deserialize, Deserializer, Serialize, Serializer};
 ///     arr: Array<u8, 64>,
 /// }
 /// ```
+#[repr(transparent)]
 #[derive(Eq, PartialEq, PartialOrd, Copy, Clone, Ord, Debug)]
 pub struct Array<T, const N: usize>(pub [T; N]);
 
