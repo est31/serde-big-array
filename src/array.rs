@@ -1,5 +1,5 @@
 use crate::BigArray;
-use core::ops::{Index, IndexMut};
+use core::ops::{Deref, DerefMut, Index, IndexMut};
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 /// An array newtype usable for nested structures
@@ -39,6 +39,20 @@ impl<T: Serialize, const N: usize> Serialize for Array<T, N> {
         S: Serializer,
     {
         <[T; N] as BigArray<T>>::serialize(&self.0, serializer)
+    }
+}
+
+impl<T, const N: usize> Deref for Array<T, N> {
+    type Target = [T; N];
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl<T, const N: usize> DerefMut for Array<T, N> {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
     }
 }
 
